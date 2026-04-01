@@ -1,19 +1,32 @@
-from __future__ import annotations
 from abc import abstractmethod
 from typing import TYPE_CHECKING
+from presentation_layer.input_text import InputText
 
-from service_layer.student_service import StudentService
+import service_layer.student_service as student_service
 
-if TYPE_CHECKING:
-    from presentation_layer.navigator import Navigator
+#if TYPE_CHECKING:
+from presentation_layer.navigator import Navigator
+
+
 
 class Menu:
-    def __init__(self, navigator: Navigator):
+
+
+    def __init__(self, navigator: Navigator, input_text: InputText):
         self.cursor: Navigator = navigator
+        self.input_text: InputText = input_text
 
     @abstractmethod
     def render() -> None:
         pass
+
+    def go_to_main(self):
+        self.cursor.navigate(MainMenu(self.cursor, self.input_text))
+
+    
+    sel = "Your Selection: "
+    invalid = "Invalid command. Please select one of the numbered options."
+    m_menu = "Returning to Main Menu..."
 
 
 class MainMenu(Menu):
@@ -29,22 +42,22 @@ Please enter the number corresponding to the action you'd like to perform:
 3) Manage Classes
 0) Finish and End Program      
         """)
-    
+
         user_input: str = input()
         match user_input:
             case "1":
                 print("Entering the student management system...")
-                self.cursor.navigate(StudentMenu(self.cursor))
+                self.cursor.navigate(StudentMenu(self.cursor, self.input_text))
             case "2":
                 print("Entering the professor management system...")
-                self.cursor.navigate(ProfessorMenu(self.cursor))
+                self.cursor.navigate(ProfessorMenu(self.cursor, self.input_text))
             case "3":
                 print("Entering the class management system...")
-                self.cursor.navigate(ClassMenu(self.cursor))
+                self.cursor.navigate(ClassMenu(self.cursor, self.input_text))
             case "0":
                 self.cursor.quit_program()
             case _:
-                print("Invalid command. Please select one of the numbered options")
+                print(self.invalid)
                 
 
 class StudentMenu(Menu):
@@ -65,13 +78,23 @@ Please select your desired option:
 0) Return to Main Menu         
               """)
         
-        user_input: str = input()
+        user_input: str = input(self.sel)
         match user_input:
             case "1":
-                print("Performing Operation...")
+                self.input_text.create_new_student()
+            case "2":
+                print("Viewing all students...")
+                print(self.m_menu)
+                self.go_to_main()
+            case "3":
+                print("Proceeding to update menu...")
+                self.input_text.update_existing_student()
             case "0":
-                self.cursor.navigate(MainMenu(self.cursor))
-
+                print(self.m_menu)
+                self.go_to_main()
+            case _:
+                print(self.invalid)
+                print(self.m_menu)
 
 class ProfessorMenu(Menu):
     def render(self):
@@ -88,13 +111,17 @@ Please select your desired option:
 0) Return to Main Menu
               """)
         
-        user_input: str = input()
+        user_input: str = input(self.sel)
         match user_input:
             case "1":
                 print("Performing Operation...")
+                
             case "0":
-                self.cursor.navigate(MainMenu(self.cursor))
-    
+                print(self.m_menu)
+                self.go_to_main()
+            case _:
+                print(self.invalid)
+                
 
 class ClassMenu(Menu):
     def render(self):
@@ -111,11 +138,16 @@ Please select your desired option:
 0) Return to Main Menu
               """)
         
-        user_input: str = input()
         
+        
+        user_input: str = input(self.sel)
         match user_input:
             case "1":
                 print("Performing Operation...")
+                print(self.m_menu)
             case "0":
-                self.cursor.navigate(MainMenu(self.cursor))
-    
+                print(self.m_menu)
+                self.go_to_main()
+            case _:
+                print(self.invalid)
+                
