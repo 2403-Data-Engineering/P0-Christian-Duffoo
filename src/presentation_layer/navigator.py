@@ -10,9 +10,9 @@ if TYPE_CHECKING:
 class Navigator:
     def __init__(self):
         from presentation_layer.menu import MainMenu
-        from presentation_layer.input_text import InputText
-        self.input_text = InputText()
-        self.current_menu = MainMenu(self, self.input_text)
+        from presentation_layer.student_input import StudentInput
+        self.student_input = StudentInput()
+        self.current_menu = MainMenu(self, self.student_input)
         self.running = True
 
     def navigate(self, next_menu: Menu):
