@@ -1,8 +1,8 @@
 from models.student import Student
 from models.course import Course
 
-student_john = Student("20", "John", "Smith", "smith@john.com", "CS", "Freshman"),
-student_jane = Student("21", "Jane", " Doe", "jane.doe@school.edu", "Math", "Junior"),
+student_john = Student("20", "John", "Smith", "smith@john.com", "CS", "Freshman")
+student_jane = Student("21", "Jane", " Doe", "jane.doe@school.edu", "Math", "Junior")
 student_chris = Student("22", "Chris", "Duffoo", "chris.duffoo@college.net", "ECE", "Senior")
 
 student_list = [student_john, student_jane, student_chris]
@@ -76,6 +76,7 @@ def get_student_from_id(id: str):
     student_josh = Student("20", "Josh", "Smith", "smith@josh.com", "CS", "Freshman")
     #^Place holder: Change to query the student database to find student with parameter ID
     return student_josh
+    #Maybe change to terminate program if invalid id:
 
 def check_enrollment(selected_student: Student):
     #TODO: Check if student is enrolled in one or more courses, return True if they have any enrollments

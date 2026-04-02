@@ -7,3 +7,4 @@ if __name__ == "__main__":
     while(terminal.running):
         terminal.current_menu.render()
     print("Program terminated. Have a great day!")
+    

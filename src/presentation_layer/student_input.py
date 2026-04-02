@@ -1,10 +1,8 @@
 from __future__ import annotations
-import re
 from models.student import Student
 from presentation_layer.regex_validation import RegexValidation
 import service_layer.student_service as student_service
 import service_layer.course_service as course_service
-
 
 
 
@@ -20,15 +18,15 @@ class StudentInput():
 
     def create_new_student(self):
         print("Please enter information for the new student.")
-        first_name: str = input("First Name: ")
+        first_name: str = input("Enter a valid First Name: ").lower()
         RegexValidation.validate_input(first_name, self.reg_name)
-        last_name: str = input("Last Name: ")
+        last_name: str = input("Last Name: ").lower()
         RegexValidation.validate_input(last_name, self.reg_name)
-        email: str = input("Email (must be unique): ")
+        email: str = input("Email (must be unique): ").lower()
         RegexValidation.validate_input(email, self.reg_email)
-        major: str = input("Major: ")
+        major: str = input("Major: ").lower()
         RegexValidation.validate_input(major, self.reg_name)
-        year = input("Year: ")
+        year = input("Year: ").lower()
         RegexValidation.validate_input(year, self.reg_year)
 
         self.new_student: Student = Student(None, first_name, last_name, email, major, year)
@@ -36,10 +34,9 @@ class StudentInput():
 
 
     def update_existing_student(self):
-        global regex
         id: str = input("Enter the unique Student ID of the student you'd like to edit: ")
         selected_student = student_service.get_student_from_id(id)
-        print('\n', selected_student)
+        print(selected_student)
         print(f"""Please select what attribute you'd like to change about {selected_student.first_name} {selected_student.last_name}:
 ===============
 1) First Name
@@ -53,7 +50,6 @@ class StudentInput():
         while (user_attr) not in ["1", "2", "3", "4", "5"]:
             user_attr: str = input("Invalid attribute value. Please try again: ")
 
-        
         user_input: str = input(self.change)
         reg = None
         match user_attr:
@@ -77,7 +73,7 @@ class StudentInput():
         id: str = input("Enter the unique Student ID of the student you're removing: ")
         selected_student = student_service.get_student_from_id(id)
         print(selected_student)
-        print(f"""Would you like to remove {selected_student.first_name} from the system?"
+        print(f"""Would you like to remove {selected_student.first_name} from the system?
 1) Yes
 2) No
               """)
@@ -114,7 +110,7 @@ class StudentInput():
         student_service.drop_student(selected_student, selected_course)
 
 
-    def view_student_enrollment(self):
+    def view_course_enrollment(self):
         id: str = input("Enter the unique Student ID of the student you'd like to view the enrollment for: ")
         selected_student = student_service.get_student_from_id(id)
 
@@ -122,9 +118,9 @@ class StudentInput():
 
 
     def generate_student_report(self):
-        id: str = input("Enter the unique Student ID of the student you'd like to view the enrollment for: ")
+        id: str = input("Enter the unique Student ID of the student you'd like to generate a report for: ")
         selected_student = student_service.get_student_from_id(id)
-        print(f"Generating report for: {selected_student.first_name}, {selected_student.last_name}...")
+        print(f"Generating report for: {selected_student.first_name} {selected_student.last_name}...")
         filepath = student_service.generate_report(selected_student)
 
         return filepath

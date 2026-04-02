@@ -1,9 +1,12 @@
 from abc import abstractmethod
 #from typing import TYPE_CHECKING
 
-
 from presentation_layer.student_input import StudentInput
 import service_layer.student_service as student_service
+from presentation_layer.professor_input import ProfessorInput
+import service_layer.professor_service as professor_service
+from presentation_layer.course_input import CourseInput
+import service_layer.course_service as course_service
 
 #if TYPE_CHECKING:
 from presentation_layer.navigator import Navigator
@@ -11,18 +14,18 @@ from presentation_layer.navigator import Navigator
 
 class Menu:
 
-
-    def __init__(self, navigator: Navigator, student_input: StudentInput):
+    def __init__(self, navigator: Navigator, student_input: StudentInput, professor_input: ProfessorInput, course_input: CourseInput):
         self.cursor: Navigator = navigator
         self.student_input: StudentInput = student_input
+        self.professor_input: ProfessorInput = professor_input
+        self.course_input: CourseInput = course_input
 
     @abstractmethod
     def render() -> None:
         pass
 
     def go_to_main(self):
-        self.cursor.navigate(MainMenu(self.cursor, self.student_input))
-
+        self.cursor.navigate(MainMenu(self.cursor, self.student_input, self.professor_input, self.course_input))
     
     sel = "Your Selection: "
     invalid = "Invalid command. Please select one of the numbered options."
@@ -47,13 +50,13 @@ Please enter the number corresponding to the action you'd like to perform:
         match user_input:
             case "1":
                 print("Entering the student management system...")
-                self.cursor.navigate(StudentMenu(self.cursor, self.student_input))
+                self.cursor.navigate(StudentMenu(self.cursor, self.student_input, self.professor_input, self.course_input))
             case "2":
                 print("Entering the professor management system...")
-                self.cursor.navigate(ProfessorMenu(self.cursor, self.student_input))
+                self.cursor.navigate(ProfessorMenu(self.cursor, self.student_input, self.professor_input, self.course_input))
             case "3":
                 print("Entering the class management system...")
-                self.cursor.navigate(ClassMenu(self.cursor, self.student_input))
+                self.cursor.navigate(ClassMenu(self.cursor, self.student_input, self.professor_input, self.course_input))
             case "0":
                 self.cursor.quit_program()
             case _:
@@ -98,7 +101,7 @@ Please select your desired option:
                 print("WARNING: Dropping a student's enrollment does not have a confirmation. Ensure you have the right ID's")
                 self.student_input.drop_student_from_course()
             case "7":
-                self.student_input.view_student_enrollment()
+                self.student_input.view_course_enrollment()
             case "8":
                 filepath = self.student_input.generate_student_report()
                 print("Access your html report at: ", filepath)
@@ -128,13 +131,25 @@ Please select your desired option:
         user_input: str = input(self.sel)
         match user_input:
             case "1":
-                print("Performing Operation...")
-                
+                self.professor_input.create_new_professor()
+            case "2":
+                print("Viewing all professors...")
+                professor_service.view_professors()
+            case "3":
+                print("Proceeding to update menu...")
+                self.professor_input.update_existing_professor()
+            case "4":
+                print("Note: A professor can only be removed if they are not teaching any courses.")
+                self.professor_input.professor_removal()
+            case "5":
+                filepath = self.professor_input.generate_professor_report()
+                print("Access your html report at: ", filepath)
             case "0":
                 print(self.m_menu)
                 self.go_to_main()
             case _:
                 print(self.invalid)
+                print(self.m_menu)
                 
 
 class ClassMenu(Menu):
@@ -148,20 +163,29 @@ Please select your desired option:
 2) View all active courses
 3) Edit details of existing course
 4) Remove course from system
-5) View enrolled students in a class
+5) View enrolled students in a course
 0) Return to Main Menu
               """)
-        
-        
         
         user_input: str = input(self.sel)
         match user_input:
             case "1":
-                print("Performing Operation...")
-                print(self.m_menu)
+                self.course_input.create_new_course()
+            case "2":
+                print("Viewing all currently active courses...")
+                course_service.view_courses()
+            case "3":
+                print("Proceeding to update menu...")
+                self.course_input.update_existing_course()
+            case "4":
+                print("WARNING: Removing a course will also remove all of its enrollments")
+                print("If you'd like to restore it later, you will have to enroll all its students again")
+                self.course_input.course_removal()
+            case "5":
+                self.course_input.view_student_enrollment()
             case "0":
                 print(self.m_menu)
                 self.go_to_main()
             case _:
                 print(self.invalid)
-                
+                print(self.m_menu)

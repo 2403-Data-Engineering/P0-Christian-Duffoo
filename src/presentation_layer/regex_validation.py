@@ -6,7 +6,7 @@ import sys
 class RegexValidation(Enum):
     EMAIL = "([\w.-]+)@([\w.-]+\.[a-zA-Z]{2,})"
     NAME = ".{2,}"
-    YEAR = "Freshman|Sophmore|Junior|Senior"
+    YEAR = "freshman|sophmore|junior|senior"
     
     def validate_input(input: str, regex:str) -> bool:
         if re.fullmatch(regex, input):
