@@ -1,3 +1,4 @@
+
 from models.student import Student
 from models.professor import Professor
 from models.course import Course
@@ -21,7 +22,9 @@ def save_new_professor(professor: Professor):
 
 def view_professors():
     #TODO: SELECT * from student table
-    print(*professor_list, sep='\n')
+    result = db.view_rows("student")
+    for row in result:
+        print(row)
 
 
 def get_professor_from_id(id: str):

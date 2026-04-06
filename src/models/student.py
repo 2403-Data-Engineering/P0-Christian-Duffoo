@@ -8,4 +8,4 @@ class Student:
     last_name: str
     email: str
     major: str
-    year: str
+    school_year: str

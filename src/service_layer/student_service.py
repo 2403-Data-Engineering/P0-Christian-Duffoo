@@ -1,3 +1,4 @@
+import data_layer.student_dao as student_dao
 from models.student import Student
 from models.course import Course
 
@@ -7,16 +8,13 @@ student_chris = Student("22", "Chris", "Duffoo", "chris.duffoo@college.net", "EC
 
 student_list = [student_john, student_jane, student_chris]
 
-
+#DONE
 def save_new_student(new_student: Student):
-
-    print(new_student)
-    print(f"Saved student {new_student.first_name} {new_student.last_name} into the system!")
-        #This is a placeholder, will actually interact with database 
-        #Ensure email is unique?
-        #If new student is valid, enter it into sql student table
-        #If invalid, return invalid message and do not insert
-        #Put constraints on the sql table
+    try:
+        student_dao.save_student(new_student)
+        print(f"Saved student {new_student.first_name} {new_student.last_name} into the system!")
+    except:
+        "There was an error in saving the new student. Returning to student management menu..."
 
     
 def update_student(selected_student: Student, user_int: str, user_input: str):
@@ -39,9 +37,16 @@ def update_student(selected_student: Student, user_int: str, user_input: str):
     print(f"Student {selected_student.first_name} {selected_student.last_name}'s attribute: {attribute} has been updated to {user_input}")
     #TODO: Update to interact with the database
 
+
+#DONE
 def remove_student(selected_student: Student):
     #TODO: Call database to remove row with student 
-    print(f"Removed student: {selected_student.first_name} {selected_student.last_name} from the system.")
+    try:
+        student_dao.drop_student(selected_student.student_id)
+        print(f"Removed student: {selected_student.first_name} {selected_student.last_name} from the system.")
+    except:
+        print("There was an error in deleting this row. Returning to student management menu...")
+        return
         
         #User enters student ID
         #Checks if student exists in table
@@ -49,19 +54,37 @@ def remove_student(selected_student: Student):
         #Have to remove enrollment junction from each class
         #Not necessarily drop row, but ignore it to keep data
 
+
+#DONE
 def view_students():
-    #TODO: SELECT * from student table
-    print(*student_list, sep='\n')
+    result = student_dao.view_all_students()
+    for row in result:
+        value = list(row.values())
+        print(value)
+    
 
-
+#DONE
 def enroll_student(student: Student, course: Course):
     #TODO: Insert into enrollment table
+    try:
+        student_dao.enroll_student_in_course(student.student_id, course.course_id)
+    except:
+        print("Error occurred. This is likely due to a duplicate entry.")
+        return
     print(f"Enrolled student {student.first_name} {student.last_name} into {course.course_name}.")
     #First checks if student is already enrolled
     #Adds junction to enrollment table
 
+
+#DONE
 def drop_student(student: Student, course: Course):
     #TODO: Drop row from enrollment table
+    try:
+        student_dao.drop_student_from_course(student.student_id, course.course_id)
+    except:
+        print("Error occurred. This enrollment likely does not exist")
+        return
+    
     print(f"Dropped student {student.first_name} {student.last_name} from {course.course_name}")
     #First checks if student exists in course
     #Ignores row instead of deleting row?
@@ -72,20 +95,31 @@ def generate_report(student: Student):
     return "user/p0/output/report.html"
     #maybe returns filepath of html file?
 
-def get_student_from_id(id: str):
-    student_josh = Student("20", "Josh", "Smith", "smith@josh.com", "CS", "Freshman")
-    #^Place holder: Change to query the student database to find student with parameter ID
-    return student_josh
-    #Maybe change to terminate program if invalid id:
 
+#DONE
+def get_student_from_id(id: str):
+    result = student_dao.get_student_by_id(int(id))
+    return Student(**result)
+
+
+#DONE
 def check_enrollment(selected_student: Student):
     #TODO: Check if student is enrolled in one or more courses, return True if they have any enrollments
-    return False
+    result = student_dao.count_rows(int(selected_student.student_id))
+    result = list(result.values())
+    print("Number of rows with this ID: ", result[0])
+    if result[0] == 0:
+        return False
+    return True
 
+
+#DONE
 def view_enrollment(student: Student):
+    print(student)
+    result = student_dao.view_enrollment(student.student_id)
+    print(f"Here are the courses {student.first_name} {student.last_name} is enrolled in:")
+    for row in result:
+        value = list(row.values())
+        print(value)
 
-    enrollment_list = ["404 Python", "123 SQL"]
-    #TODO: Check number of rows student has in enrollment table
-    print(f"{student.first_name} {student.last_name}'s enrolled courses:")
-    for enrollment in enrollment_list:
-        print(enrollment)
+    

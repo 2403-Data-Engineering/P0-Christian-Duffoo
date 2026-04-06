@@ -1,16 +1,13 @@
+import data_layer.course_dao as course_dao
 from models.student import Student
 from models.course import Course
 from models.professor import Professor
 
-course_math = Course("101", "Math", "John Smith", "12")
-course_cs = Course("404", "Python", "Kyle Plummer", "13")
-course_history = Course("225", "American History", "Jane Doe", "8")
-
-course_list = [course_math, course_cs, course_history]
 
 def get_course_from_id(id: str):
     #TODO: Query database course table
-    return course_math
+    result = course_dao.get_course_by_id(int(id))
+    return Course(**result)
 
 
 def save_new_course(course: Course):
@@ -25,7 +22,10 @@ def save_new_course(course: Course):
 
 def view_courses():
     #TODO: SELECT * from student table
-    print(*course_list, sep='\n')
+    result = course_dao.view_all_courses()
+    for row in result:
+        value = list(row.values())
+        print(value)
 
 def update_course(selected_course: Course, user_int: str, user_input):
     #TODO: Updates selected_student (already confirmed to exist) attribute according to int
