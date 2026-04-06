@@ -1,0 +1,13 @@
+astroid==3.3.11
+colorama==0.4.6
+dill==0.4.1
+importlib_metadata==8.7.1
+isort==6.1.0
+mccabe==0.7.0
+mysql-connector-python==9.4.0
+platformdirs==4.4.0
+pylint==3.3.9
+tomli==2.4.1
+tomlkit==0.14.0
+typing_extensions==4.15.0
+zipp==3.23.0

@@ -5,7 +5,7 @@ import service_layer.professor_service as professor_service
 import service_layer.course_service as course_service
 
 
-class ProfessorInput():
+class ProfessorInput:
 
     sel = "Your Selection: "
     change = "Change this value to: "
@@ -17,13 +17,13 @@ class ProfessorInput():
 
     def create_new_professor(self):
         print("Please enter information for the new professor.")
-        first_name: str = input("Enter a valid First Name: ").lower()
+        first_name: str = input("Enter a valid First Name: ")
         RegexValidation.validate_input(first_name, self.reg_name)
-        last_name: str = input("Last Name: ").lower()
+        last_name: str = input("Last Name: ")
         RegexValidation.validate_input(last_name, self.reg_name)
-        department: str = input("Department: ").lower()
+        department: str = input("Department: ")
         RegexValidation.validate_input(department, self.reg_name)
-        email: str = input("Email (must be unique): ").lower()
+        email: str = input("Email (must be unique): ")
         RegexValidation.validate_input(email, self.reg_email)
         
         self.new_professor: Professor = Professor(None, first_name, last_name, department, email)

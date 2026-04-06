@@ -9,13 +9,12 @@ from presentation_layer.course_input import CourseInput
 import service_layer.course_service as course_service
 
 #if TYPE_CHECKING:
-from presentation_layer.navigator import Navigator
+import presentation_layer.navigator as navigator
 
 
 class Menu:
 
-    def __init__(self, navigator: Navigator, student_input: StudentInput, professor_input: ProfessorInput, course_input: CourseInput):
-        self.cursor: Navigator = navigator
+    def __init__(self, student_input: StudentInput, professor_input: ProfessorInput, course_input: CourseInput):
         self.student_input: StudentInput = student_input
         self.professor_input: ProfessorInput = professor_input
         self.course_input: CourseInput = course_input
@@ -25,7 +24,7 @@ class Menu:
         pass
 
     def go_to_main(self):
-        self.cursor.navigate(MainMenu(self.cursor, self.student_input, self.professor_input, self.course_input))
+        navigator.navigate(MainMenu(self.student_input, self.professor_input, self.course_input))
     
     sel = "Your Selection: "
     invalid = "Invalid command. Please select one of the numbered options."
@@ -50,15 +49,15 @@ Please enter the number corresponding to the action you'd like to perform:
         match user_input:
             case "1":
                 print("Entering the student management system...")
-                self.cursor.navigate(StudentMenu(self.cursor, self.student_input, self.professor_input, self.course_input))
+                navigator.navigate(StudentMenu(self.student_input, self.professor_input, self.course_input))
             case "2":
                 print("Entering the professor management system...")
-                self.cursor.navigate(ProfessorMenu(self.cursor, self.student_input, self.professor_input, self.course_input))
+                navigator.navigate(ProfessorMenu(self.student_input, self.professor_input, self.course_input))
             case "3":
                 print("Entering the class management system...")
-                self.cursor.navigate(ClassMenu(self.cursor, self.student_input, self.professor_input, self.course_input))
+                navigator.navigate(ClassMenu(self.student_input, self.professor_input, self.course_input))
             case "0":
-                self.cursor.quit_program()
+                navigator.quit_program(self)
             case _:
                 print(self.invalid)
                 
