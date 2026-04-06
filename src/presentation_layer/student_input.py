@@ -35,7 +35,12 @@ class StudentInput:
 
     def update_existing_student(self):
         id: str = input("Enter the unique Student ID of the student you'd like to edit: ")
-        selected_student = student_service.get_student_from_id(id)
+        try:
+            selected_student = student_service.get_student_from_id(id)
+        except:
+            print("Invalid ID")
+            return
+        
         print(selected_student)
         print(f"""Please select what attribute you'd like to change about {selected_student.first_name} {selected_student.last_name}:
 ===============
@@ -72,7 +77,11 @@ class StudentInput:
 
     def student_removal(self):
         id: str = input("Enter the unique Student ID of the student you're removing: ")
-        selected_student = student_service.get_student_from_id(id)
+        try:
+            selected_student = student_service.get_student_from_id(id)
+        except:
+            print("Invalid ID.")
+            return
         print(selected_student)
         print(f"""Would you like to remove {selected_student.first_name} from the system?
 1) Yes
@@ -88,39 +97,55 @@ class StudentInput:
             if not ready_flag:
                 student_service.remove_student(selected_student)
             else:
-                print("This student is enrolled in one or more courses and cannot be removed")
+                print(f"This student ({selected_student.first_name} {selected_student.last_name}) is enrolled in one or more courses and cannot be removed.")
         else:
             print("Removal cancelled. Returning to student management menu...")
         
         
     def enroll_student_in_course(self):
-        id: str = input("Enter the unique Student ID of the student you're enrolling in a course: ")
-        selected_student = student_service.get_student_from_id(id)
-        course_id: str = input("Enter the course ID of the class you'd like to enroll this student in: ")
-        selected_course = course_service.get_course_from_id(course_id)
+        try:
+            id: str = input("Enter the unique Student ID of the student you're enrolling in a course: ")
+            selected_student = student_service.get_student_from_id(id)
+            course_id: str = input("Enter the course ID of the class you'd like to enroll this student in: ")
+            selected_course = course_service.get_course_from_id(course_id)
+        except:
+           print("Invalid student or course ID")
+           return
 
         student_service.enroll_student(selected_student, selected_course)
 
 
     def drop_student_from_course(self):
-        id: str = input("Enter the unique Student ID of the student you're dropping from a course: ")
-        selected_student = student_service.get_student_from_id(id)
-        course_id: str = input("Enter the course ID of the class you'd like to drop this student from: ")
-        selected_course = course_service.get_course_from_id(course_id)
+        try:
+            id: str = input("Enter the unique Student ID of the student you're dropping from a course: ")
+            selected_student = student_service.get_student_from_id(id)
+            course_id: str = input("Enter the course ID of the class you'd like to drop this student from: ")
+            selected_course = course_service.get_course_from_id(course_id)
+        except:
+            print("Invalid ID")
+            return
 
         student_service.drop_student(selected_student, selected_course)
 
 
     def view_course_enrollment(self):
         id: str = input("Enter the unique Student ID of the student you'd like to view the enrollment for: ")
-        selected_student = student_service.get_student_from_id(id)
-
+        try:
+            selected_student = student_service.get_student_from_id(id)
+        except:
+            print("Invalid student ID.")
+            return
+        
         student_service.view_enrollment(selected_student)
 
 
     def generate_student_report(self):
         id: str = input("Enter the unique Student ID of the student you'd like to generate a report for: ")
-        selected_student = student_service.get_student_from_id(id)
+        try:
+            selected_student = student_service.get_student_from_id(id)
+        except:
+            print("Invalid ID")
+            return
         print(f"Generating report for: {selected_student.first_name} {selected_student.last_name}...")
         filepath = student_service.generate_report(selected_student)
 
