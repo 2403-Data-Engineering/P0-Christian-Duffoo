@@ -5,7 +5,7 @@ import service_layer.course_service as course_service
 import service_layer.professor_service as professor_service
 import service_layer.student_service as student_service
 
-class CourseInput():
+class CourseInput:
     sel = "Your Selection: "
     change = "Change this value to: "
 
@@ -13,7 +13,7 @@ class CourseInput():
     
     def create_new_course(self):
         print("Please enter information for the new course.")
-        course_name: str = input("Enter a valid CourseName: ").lower()
+        course_name: str = input("Enter a valid CourseName: ")
         RegexValidation.validate_input(course_name, self.reg_name)
         prof_id: str = input("Enter the Professor ID of the professor to be assigned to this course: ")
         assigned_professor = professor_service.get_professor_from_id(prof_id)

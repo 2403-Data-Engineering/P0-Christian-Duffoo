@@ -6,7 +6,7 @@ import service_layer.course_service as course_service
 
 
 
-class StudentInput():
+class StudentInput:
 
     sel = "Your Selection: "
     change = "Change this value to: "
@@ -18,13 +18,13 @@ class StudentInput():
 
     def create_new_student(self):
         print("Please enter information for the new student.")
-        first_name: str = input("Enter a valid First Name: ").lower()
+        first_name: str = input("Enter a valid First Name: ")
         RegexValidation.validate_input(first_name, self.reg_name)
-        last_name: str = input("Last Name: ").lower()
+        last_name: str = input("Last Name: ")
         RegexValidation.validate_input(last_name, self.reg_name)
-        email: str = input("Email (must be unique): ").lower()
+        email: str = input("Email (must be unique): ")
         RegexValidation.validate_input(email, self.reg_email)
-        major: str = input("Major: ").lower()
+        major: str = input("Major: ")
         RegexValidation.validate_input(major, self.reg_name)
         year = input("Year: ").lower()
         RegexValidation.validate_input(year, self.reg_year)
@@ -62,6 +62,7 @@ class StudentInput():
             case "4":
                 reg = self.reg_name
             case "5":
+                user_input = user_input.lower()
                 reg = self.reg_year
         RegexValidation.validate_input(user_input, reg)
         #TODO: Implement regex class and use it to verify input
