@@ -1,7 +1,8 @@
-
 from models.student import Student
 from models.professor import Professor
 from models.course import Course
+
+import data_layer.professor_dao as professor_dao
 
 professor_smark = Professor("12", "Mark", "Smark", "Science", "mark.smark@emark.com")
 professor_fisher = Professor("13", "Ashley", "Fisher", "Psychology", "ashley.fisher@school.edu")
@@ -12,62 +13,66 @@ professor_list = [professor_smark, professor_fisher, professor_johnson]
 
 def save_new_professor(professor: Professor):
     print(professor)
-    print(f"Saved professor {professor.first_name} {professor.last_name} into the system!")
-        #This is a placeholder, will actually interact with database 
-        #Ensure email is unique?
-        #If new student is valid, enter it into sql student table
-        #If invalid, return invalid message and do not insert
-        #Put constraints on the sql table
+    try:
+        professor_dao.save_professor(professor)
+        print(f"Saved professor {professor.first_name} {professor.last_name} into the system!")
+    except:
+        print("There was an error in saving the new professor, likely due to duplicate email. Returning to professor management menu...")
 
 
 def view_professors():
-    #TODO: SELECT * from student table
-    result = db.view_rows("student")
+    result = professor_dao.view_all_professors()
     for row in result:
-        print(row)
-
-
-def get_professor_from_id(id: str):
-    #^Place holder: Change to query the student database to find student with parameter ID
-    return professor_johnson
-    #Maybe change to terminate program if invalid id:
+        value = list(row.values())
+        print(value)
 
 
 def update_professor(selected_professor: Professor, user_int: str, user_input: str):
-    #TODO: Updates selected_student (already confirmed to exist) attribute according to int
-    #Database returns result and prompts what attribute to change
-    #Perform update function
-    attribute = ""
     match user_int:
         case "1":
             attribute = "First Name"
+            change = "first_name"
         case "2":
             attribute = "Last Name"
+            change = "last_name"
         case "3":
             attribute = "Department"
+            change = "department"
         case "4":
             attribute = "Email"
+            change = "email"
+
+    try:
+        professor_dao.update_professor(selected_professor.professor_id, change, user_input)
+    except:
+        print("There was an error, likely due to invalid input.")
+        return
 
     print(f"Professor {selected_professor.first_name} {selected_professor.last_name}'s attribute: {attribute} has been updated to {user_input}")
-    #TODO: Update to interact with the database
+
 
 def remove_professor(selected_professor: Professor):
-    #TODO: Call database to remove row with student 
-    print(f"Removed professor: {selected_professor.first_name} {selected_professor.last_name} from the system.")
-        
-        #User enters student ID
-        #Checks if student exists in table
-        #Prevent removal if student is enrolled in a course
-        #Have to remove enrollment junction from each class
-        #Not necessarily drop row, but ignore it to keep data
+    #try:
+        professor_dao.drop_professor(selected_professor.professor_id)
+        print(f"Removed professor: {selected_professor.first_name} {selected_professor.last_name} from the system.")
+    #except:
+        #print("There was an error in deleting this row. Returning to student management menu...")
+        #return 
 
 
-def check_instructed_courses(profesor: Professor):
-    #TODO: Check if student is enrolled in one or more courses, return True if they have any enrollments
-    return False
+def get_professor_from_id(id: str):
+    result = professor_dao.get_professor_by_id(int(id))
+    return Professor(**result)
+
+
+def check_instructed_courses(professor: Professor):
+    result = professor_dao.count_rows(professor.professor_id)
+    result = list(result.values())
+    if result[0] == 0:
+        return False
+    return True
+
 
 def generate_report(professor: Professor):
-    #TODO: Queries enrollment table and converts it to HTML
-    #Find all classes of a student with studentID in enrollment table
-    return "user/p0/output/report.html"
-    #maybe returns filepath of html file?
+    filename = professor_dao.generate_report(professor)
+    return filename

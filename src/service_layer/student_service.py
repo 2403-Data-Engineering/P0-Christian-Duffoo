@@ -14,45 +14,7 @@ def save_new_student(new_student: Student):
         student_dao.save_student(new_student)
         print(f"Saved student {new_student.first_name} {new_student.last_name} into the system!")
     except:
-        "There was an error in saving the new student. Returning to student management menu..."
-
-    
-def update_student(selected_student: Student, user_int: str, user_input: str):
-    #TODO: Updates selected_student (already confirmed to exist) attribute according to int
-    #Database returns result and prompts what attribute to change
-    #Perform update function
-    attribute = ""
-    match user_int:
-        case "1":
-            attribute = "First Name"
-        case "2":
-            attribute = "Last Name"
-        case "3":
-            attribute = "Email"
-        case "4":
-            attribute = "Major"
-        case "5":
-            attribute = "Year"
-
-    print(f"Student {selected_student.first_name} {selected_student.last_name}'s attribute: {attribute} has been updated to {user_input}")
-    #TODO: Update to interact with the database
-
-
-#DONE
-def remove_student(selected_student: Student):
-    #TODO: Call database to remove row with student 
-    try:
-        student_dao.drop_student(selected_student.student_id)
-        print(f"Removed student: {selected_student.first_name} {selected_student.last_name} from the system.")
-    except:
-        print("There was an error in deleting this row. Returning to student management menu...")
-        return
-        
-        #User enters student ID
-        #Checks if student exists in table
-        #Prevent removal if student is enrolled in a course
-        #Have to remove enrollment junction from each class
-        #Not necessarily drop row, but ignore it to keep data
+       print("There was an error in saving the new student, likely due to duplicate email. Returning to student management menu...")
 
 
 #DONE
@@ -61,19 +23,53 @@ def view_students():
     for row in result:
         value = list(row.values())
         print(value)
-    
+
+
+#DONE
+def update_student(selected_student: Student, user_int: str, user_input: str):
+    match user_int:
+        case "1":
+            attribute = "First Name"
+            change = 'first_name'
+        case "2":
+            attribute = "Last Name"
+            change = 'last_name'
+        case "3":
+            attribute = "Email"
+            change = 'email'
+        case "4":
+            attribute = "Major"
+            change = 'major'
+        case "5":
+            attribute = "Year"
+            change = 'school_year'
+    try:
+        student_dao.update_student(selected_student.student_id, change, user_input)
+    except:
+        print("There was an error, likely due to invalid input.")
+        return
+
+    print(f"Student {selected_student.first_name} {selected_student.last_name}'s attribute: {attribute} has been updated to {user_input}")
+
+
+#DONE
+def remove_student(selected_student: Student):
+    try:
+        student_dao.drop_student(selected_student.student_id)
+        print(f"Removed student: {selected_student.first_name} {selected_student.last_name} from the system.")
+    except:
+        print("There was an error in deleting this row. Returning to student management menu...")
+        return
+
 
 #DONE
 def enroll_student(student: Student, course: Course):
-    #TODO: Insert into enrollment table
     try:
         student_dao.enroll_student_in_course(student.student_id, course.course_id)
     except:
         print("Error occurred. This is likely due to a duplicate entry.")
         return
     print(f"Enrolled student {student.first_name} {student.last_name} into {course.course_name}.")
-    #First checks if student is already enrolled
-    #Adds junction to enrollment table
 
 
 #DONE
@@ -89,12 +85,6 @@ def drop_student(student: Student, course: Course):
     #First checks if student exists in course
     #Ignores row instead of deleting row?
 
-def generate_report(student: Student):
-    #TODO: Queries enrollment table and converts it to HTML
-    #Find all classes of a student with studentID in enrollment table
-    return "user/p0/output/report.html"
-    #maybe returns filepath of html file?
-
 
 #DONE
 def get_student_from_id(id: str):
@@ -104,10 +94,8 @@ def get_student_from_id(id: str):
 
 #DONE
 def check_enrollment(selected_student: Student):
-    #TODO: Check if student is enrolled in one or more courses, return True if they have any enrollments
-    result = student_dao.count_rows(int(selected_student.student_id))
+    result = student_dao.count_rows(selected_student.student_id)
     result = list(result.values())
-    print("Number of rows with this ID: ", result[0])
     if result[0] == 0:
         return False
     return True
@@ -122,4 +110,8 @@ def view_enrollment(student: Student):
         value = list(row.values())
         print(value)
 
-    
+
+#DONE
+def generate_report(student: Student):
+    filename = student_dao.generate_report(student)
+    return filename
