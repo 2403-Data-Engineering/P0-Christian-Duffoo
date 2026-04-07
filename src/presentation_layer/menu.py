@@ -103,7 +103,11 @@ Please select your desired option:
                 self.student_input.view_course_enrollment()
             case "8":
                 filepath = self.student_input.generate_student_report()
-                print("Access your html report at: ", filepath)
+                if filepath == None:
+                    print("Invalid ID.")
+                else:
+                    print("Access your html report at: ", filepath)
+                    print("NOTE: Generating a new student report will overwrite an existing report unless you move it from the repository or rename it.")
             case "0":
                 print(self.m_menu)
                 self.go_to_main()
@@ -142,7 +146,11 @@ Please select your desired option:
                 self.professor_input.professor_removal()
             case "5":
                 filepath = self.professor_input.generate_professor_report()
-                print("Access your html report at: ", filepath)
+                if filepath == None:
+                    print("Invalid ID.")
+                else:
+                    print("Access your html report at: ", filepath)
+                    print("NOTE: Generating a new professor report will overwrite an existing report unless you move it from the repository or rename it.")
             case "0":
                 print(self.m_menu)
                 self.go_to_main()

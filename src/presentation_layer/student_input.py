@@ -144,7 +144,6 @@ class StudentInput:
         try:
             selected_student = student_service.get_student_from_id(id)
         except:
-            print("Invalid ID")
             return
         print(f"Generating report for: {selected_student.first_name} {selected_student.last_name}...")
         filepath = student_service.generate_report(selected_student)

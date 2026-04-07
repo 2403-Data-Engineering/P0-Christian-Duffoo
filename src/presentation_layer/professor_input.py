@@ -32,7 +32,11 @@ class ProfessorInput:
 
     def update_existing_professor(self):
         id: str = input("Enter the unique professor ID of the professor you'd like to edit: ")
-        selected_professor = professor_service.get_professor_from_id(id)
+        try:
+            selected_professor = professor_service.get_professor_from_id(id)
+        except:
+            print("Invalid ID")
+            return
         print(selected_professor)
         print(f"""Please select what attribute you'd like to change about {selected_professor.first_name} {selected_professor.last_name}:
 ===============
@@ -66,7 +70,11 @@ class ProfessorInput:
 
     def professor_removal(self):
         id: str = input("Enter the unique Professor ID of the professor you're removing: ")
-        selected_professor = professor_service.get_professor_from_id(id)
+        try:
+            selected_professor = professor_service.get_professor_from_id(id)
+        except:
+            print("Invalid ID.")
+            return
         print(selected_professor)
         print(f"""Would you like to remove {selected_professor.first_name} from the system?
 1) Yes
@@ -82,14 +90,17 @@ class ProfessorInput:
             if not ready_flag:
                 professor_service.remove_professor(selected_professor)
             else:
-                print("This professor is the instructor of one or more courses")
+                print(f"This professor ({selected_professor.first_name} {selected_professor.last_name}) is the instructor of one or more courses and cannot be removed.")
         else:
             print("Removal cancelled. Returning to professor management menu...")
 
 
     def generate_professor_report(self):
         id: str = input("Enter the unique Professor ID of the professor you'd like to generate a report for: ")
-        selected_professor = professor_service.get_professor_from_id(id)
+        try:
+            selected_professor = professor_service.get_professor_from_id(id)
+        except:
+            return
         print(f"Generating report for: {selected_professor.first_name} {selected_professor.last_name}...")
         filepath = professor_service.generate_report(selected_professor)
 
