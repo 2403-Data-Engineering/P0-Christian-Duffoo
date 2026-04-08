@@ -13,18 +13,25 @@ class CourseInput:
     
     def create_new_course(self):
         print("Please enter information for the new course.")
-        course_name: str = input("Enter a valid CourseName: ")
+        course_name: str = input("Enter a valid course name: ")
         RegexValidation.validate_input(course_name, self.reg_name)
         prof_id: str = input("Enter the Professor ID of the professor to be assigned to this course: ")
-        assigned_professor = professor_service.get_professor_from_id(prof_id)
 
-        self.new_course: Course = Course(None, course_name, assigned_professor.last_name, prof_id)
-        course_service.save_new_course(self.new_course)
+        self.new_course: Course = Course(None, course_name, prof_id)
+        try:
+            course_service.save_new_course(self.new_course)
+        except:
+            print("There was an error saving the new course, likely due to invalid professor ID.")
 
 
     def update_existing_course(self):
         id: str = input("Enter the unique course ID of the course you'd like to edit: ")
-        selected_course = course_service.get_course_from_id(id)
+        try:
+            selected_course = course_service.get_course_from_id(id)
+        except:
+            print("Invalid ID")
+            return
+        
         print(selected_course)
         print(f"""Please select what attribute you'd like to change about {selected_course.course_name}:
 ===============
@@ -36,23 +43,30 @@ class CourseInput:
         while (user_attr) not in ["1", "2"]:
             user_attr: str = input("Invalid attribute value. Please try again: ")
 
-        
         user_input = None
         match user_attr:
             case "1":
                 user_input: str = input(self.change)
                 RegexValidation.validate_input(user_input, self.reg_name)
+                course_service.update_course(selected_course, user_attr, user_input)
             case "2":
                 temp_input: str = input("Enter the professor ID of the new professor you'd like to assign to this course: ")
-                user_input = professor_service.get_professor_from_id(temp_input)
+                try:
+                    user_input = professor_service.get_professor_from_id(temp_input)
+                except:
+                    print("Invalid ID.")
+                    return
+                course_service.update_course(selected_course, user_attr, user_input)
 
-
-        course_service.update_course(selected_course, user_attr, user_input)
 
 
     def course_removal(self):
         id: str = input("Enter the unique course ID of the course you're removing: ")
-        selected_course = course_service.get_course_from_id(id)
+        try:
+            selected_course = course_service.get_course_from_id(id)
+        except:
+            print("Invalid ID.")
+            return
         print(selected_course)
         print(f"""Would you like to remove {selected_course.course_name} from the system?
 1) Yes
@@ -68,8 +82,13 @@ class CourseInput:
         else:
             print("Removal cancelled. Returning to course management menu...")
 
+
     def view_student_enrollment(self):
         id: str = input("Enter the unique course ID of the course you'd like to view the enrollment for: ")
-        selected_course = course_service.get_course_from_id(id)
+        try:
+            selected_course = course_service.get_course_from_id(id)
+        except:
+            print("Invalid ID.")
+            return
 
         course_service.view_enrollment(selected_course)

@@ -1,5 +1,6 @@
 from data_layer.db_connection_manager import get_connection
 from yattag import Doc, indent
+from mdutils.mdutils import MdUtils
 
 
 
@@ -81,8 +82,6 @@ def count_rows(id: int):
     
 
 def generate_report(student):
-    rows = None
-    columns = None
     with get_connection() as conn:
         cursor = conn.cursor(dictionary=True)
         sql = """SELECT course_id, course_name
@@ -93,37 +92,22 @@ def generate_report(student):
         rows = cursor.fetchall()
         columns = [desc[0] for desc in cursor.description]
 
-    doc, tag, text, line = Doc().ttl()
-    student_name = f"{student.first_name} {student.last_name}"
+    md = MdUtils(file_name="student_report", title="Student Enrollment Report")
 
-    doc.asis('<!DOCTYPE html>')
-    with tag('html', lang='en'):
-        with tag('head'):
-            doc.stag('meta', charset='utf-8')
-            line('title', 'MySQL Query Report')
-            with tag('style'):
-                text("table { border-collapse: collapse; width: 100%; }")
-                text("th, td { border: 1px solid black; padding: 8px; text-align: left; }")
-        with tag('body'):
-            line('h1', f'Enrollment Report for {student_name} (ID: {student.student_id})')
-            with tag('p', klass='meta'):
-                text(f"Total records: {len(rows)}")
+    md.new_header(level=1, title=f"{student.first_name} {student.last_name} (ID: {student.student_id})")
 
-            with tag('table'):
-                # Header row
-                with tag('thead'):
-                    with tag('tr'):
-                        for col in columns:
-                            line('th', col.replace('_', ' ').title())
-                # Data rows
-                with tag('tbody'):
-                    for row in rows:
-                        with tag('tr'):
-                            for col in columns:
-                                line('td', str(row[col]) if row[col] is not None else '—')
 
-    html_output = indent(doc.getvalue())
-    with open('student_report.html', 'w') as f:
-        f.write(html_output)
+    table_data = list(columns)
+    for row in rows:
+        for cell in row.values():
+            table_data.append(str(cell))
 
-    return "student_report.html"
+    md.new_table(
+        columns=len(columns),
+        rows=len(rows) + 1,
+        text=table_data,
+        text_align="center")
+
+    md.create_md_file()
+    
+    return "student_report.md"

@@ -52,12 +52,12 @@ def update_professor(selected_professor: Professor, user_int: str, user_input: s
 
 
 def remove_professor(selected_professor: Professor):
-    #try:
+    try:
         professor_dao.drop_professor(selected_professor.professor_id)
         print(f"Removed professor: {selected_professor.first_name} {selected_professor.last_name} from the system.")
-    #except:
-        #print("There was an error in deleting this row. Returning to student management menu...")
-        #return 
+    except:
+        print("There was an error in deleting this row. Returning to professor management menu...")
+        return 
 
 
 def get_professor_from_id(id: str):

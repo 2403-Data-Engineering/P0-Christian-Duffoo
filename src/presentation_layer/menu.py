@@ -86,7 +86,7 @@ Please select your desired option:
             case "1":
                 self.student_input.create_new_student()
             case "2":
-                print("Viewing all students...")
+                print("Viewing all students...\n(ID, First Name, Last Name, Email, Major, Year)")
                 student_service.view_students()
             case "3":
                 print("Proceeding to update menu...")
@@ -106,7 +106,7 @@ Please select your desired option:
                 if filepath == None:
                     print("Invalid ID.")
                 else:
-                    print("Access your html report at: ", filepath)
+                    print("Access your report at:", filepath)
                     print("NOTE: Generating a new student report will overwrite an existing report unless you move it from the repository or rename it.")
             case "0":
                 print(self.m_menu)
@@ -136,7 +136,7 @@ Please select your desired option:
             case "1":
                 self.professor_input.create_new_professor()
             case "2":
-                print("Viewing all professors...")
+                print("Viewing all professors...\n(ID, First Name, Last Name, Department, Email)")
                 professor_service.view_professors()
             case "3":
                 print("Proceeding to update menu...")
@@ -149,7 +149,7 @@ Please select your desired option:
                 if filepath == None:
                     print("Invalid ID.")
                 else:
-                    print("Access your html report at: ", filepath)
+                    print("Access your report at:", filepath)
                     print("NOTE: Generating a new professor report will overwrite an existing report unless you move it from the repository or rename it.")
             case "0":
                 print(self.m_menu)
@@ -179,7 +179,7 @@ Please select your desired option:
             case "1":
                 self.course_input.create_new_course()
             case "2":
-                print("Viewing all currently active courses...")
+                print("Viewing all currently active courses...\n(ID, Course Name, Assigned Professor ID)")
                 course_service.view_courses()
             case "3":
                 print("Proceeding to update menu...")

@@ -1,3 +1,4 @@
+mdutils==1.8.1
 mysql-connector-python==9.6.0
 python-dotenv==1.2.2
 yattag==1.16.1
