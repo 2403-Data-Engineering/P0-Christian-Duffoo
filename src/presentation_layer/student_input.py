@@ -10,24 +10,55 @@ class StudentInput:
 
     sel = "Your Selection: "
     change = "Change this value to: "
+    invalid = "Invalid input. Please try again: "
 
     reg_name = RegexValidation.NAME.value
     reg_email = RegexValidation.EMAIL.value
     reg_year = RegexValidation.YEAR.value
-    
+    valid_input = False
+
 
     def create_new_student(self):
         print("Please enter information for the new student.")
-        first_name: str = input("Enter a valid First Name: ")
-        RegexValidation.validate_input(first_name, self.reg_name)
-        last_name: str = input("Last Name: ")
-        RegexValidation.validate_input(last_name, self.reg_name)
-        email: str = input("Email (must be unique): ")
-        RegexValidation.validate_input(email, self.reg_email)
-        major: str = input("Major: ")
-        RegexValidation.validate_input(major, self.reg_name)
-        year = input("Year: ").lower()
-        RegexValidation.validate_input(year, self.reg_year)
+        while self.valid_input == False:
+            first_name: str = input("Enter a valid First Name: ")
+            self.valid_input = RegexValidation.validate_input(first_name, self.reg_name)
+            if self.valid_input:
+                break
+            print(self.invalid)
+        self.valid_input = False
+
+        while self.valid_input == False:
+            last_name: str = input("Last Name: ")
+            self.valid_input = RegexValidation.validate_input(last_name, self.reg_name)
+            if self.valid_input:
+                break
+            print(self.invalid)
+        self.valid_input = False
+
+        while self.valid_input == False:
+            email: str = input("Email (must be unique): ").lower()
+            self.valid_input = RegexValidation.validate_input(email, self.reg_email)
+            if self.valid_input:
+                break
+            print(self.invalid)
+        self.valid_input = False
+
+        while self.valid_input == False:
+            major: str = input("Major: ")
+            self.valid_input = RegexValidation.validate_input(major, self.reg_name)
+            if self.valid_input:
+                break
+            print(self.invalid)
+        self.valid_input = False
+
+        while self.valid_input == False:  
+            year = input("Year: ").lower()
+            self.valid_input = RegexValidation.validate_input(year, self.reg_year)
+            if self.valid_input:
+                break
+            print(self.invalid)
+        self.valid_input = False
 
         self.new_student: Student = Student(None, first_name, last_name, email, major, year)
         student_service.save_new_student(self.new_student)
@@ -56,7 +87,6 @@ class StudentInput:
             user_attr: str = input("Invalid attribute value. Please try again: ")
 
         user_input: str = input(self.change)
-        reg = None
         match user_attr:
             case "1":
                 reg = self.reg_name
@@ -69,8 +99,12 @@ class StudentInput:
             case "5":
                 user_input = user_input.lower()
                 reg = self.reg_year
-        RegexValidation.validate_input(user_input, reg)
-        #TODO: Implement regex class and use it to verify input
+                
+        while self.valid_input == False:
+            self.valid_input = RegexValidation.validate_input(user_input, reg)
+            if self.valid_input:
+                break
+            user_input = input(self.invalid)
 
         student_service.update_student(selected_student, user_attr, user_input)
 
@@ -149,3 +183,4 @@ class StudentInput:
         filepath = student_service.generate_report(selected_student)
 
         return filepath
+    
