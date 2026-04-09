@@ -9,22 +9,47 @@ class ProfessorInput:
 
     sel = "Your Selection: "
     change = "Change this value to: "
+    invalid = "Invalid input. Please try again: "
 
     reg_name = RegexValidation.NAME.value
     reg_email = RegexValidation.EMAIL.value
     reg_year = RegexValidation.YEAR.value
+    
+    valid_input = False
 
 
     def create_new_professor(self):
         print("Please enter information for the new professor.")
-        first_name: str = input("Enter a valid First Name: ")
-        RegexValidation.validate_input(first_name, self.reg_name)
-        last_name: str = input("Last Name: ")
-        RegexValidation.validate_input(last_name, self.reg_name)
-        department: str = input("Department: ")
-        RegexValidation.validate_input(department, self.reg_name)
-        email: str = input("Email (must be unique): ")
-        RegexValidation.validate_input(email, self.reg_email)
+        while self.valid_input == False:
+            first_name: str = input("Enter a valid First Name: ")
+            self.valid_input = RegexValidation.validate_input(first_name, self.reg_name)
+            if self.valid_input:
+                break
+            print(self.invalid)
+        self.valid_input = False
+
+        while self.valid_input == False:
+            last_name: str = input("Last Name: ")
+            self.valid_input = RegexValidation.validate_input(last_name, self.reg_name)
+            if self.valid_input:
+                break
+            print(self.invalid)
+        self.valid_input = False
+
+        while self.valid_input == False:
+            department: str = input("Department: ")
+            self.valid_input = RegexValidation.validate_input(department, self.reg_name)
+            if self.valid_input:
+                break
+            print(self.invalid)
+        
+        while self.valid_input == False:
+            email: str = input("Email (must be unique): ").lower()
+            self.valid_input = RegexValidation.validate_input(email, self.reg_email)
+            if self.valid_input:
+                break
+            print(self.invalid)
+        self.valid_input = False
         
         self.new_professor: Professor = Professor(None, first_name, last_name, department, email)
         professor_service.save_new_professor(self.new_professor)
@@ -62,8 +87,12 @@ class ProfessorInput:
                 reg = self.reg_name
             case "4":
                 reg = self.reg_email
-        RegexValidation.validate_input(user_input, reg)
-        #TODO: Implement regex class and use it to verify input
+
+        while self.valid_input == False:
+            self.valid_input = RegexValidation.validate_input(user_input, reg)
+            if self.valid_input:
+                break
+            user_input = input(self.invalid)
 
         professor_service.update_professor(selected_professor, user_attr, user_input)
 

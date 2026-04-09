@@ -8,13 +8,19 @@ import service_layer.student_service as student_service
 class CourseInput:
     sel = "Your Selection: "
     change = "Change this value to: "
+    invalid = "Invalid input. Please try again: "
 
     reg_name = RegexValidation.NAME.value
+    valid_input = False
     
     def create_new_course(self):
         print("Please enter information for the new course.")
-        course_name: str = input("Enter a valid course name: ")
-        RegexValidation.validate_input(course_name, self.reg_name)
+        while self.valid_input == False:
+            course_name: str = input("Enter a valid course name: ")
+            self.valid_input = RegexValidation.validate_input(course_name, self.reg_name)
+            if self.valid_input:
+                break
+            print(self.invalid)
         prof_id: str = input("Enter the Professor ID of the professor to be assigned to this course: ")
 
         self.new_course: Course = Course(None, course_name, prof_id)
