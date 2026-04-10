@@ -42,6 +42,7 @@ class ProfessorInput:
             if self.valid_input:
                 break
             print(self.invalid)
+        self.valid_input = False
         
         while self.valid_input == False:
             email: str = input("Email (must be unique): ").lower()
